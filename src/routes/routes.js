@@ -2,11 +2,11 @@ import login from '../page/Login.vue'
 import Admin from '../page/Admin.vue'
 import Reg from '../page/Reg.vue'
 const routes = [
-  {
-    path: '/',
-    name: '默认首页',
-    redirect: '/admin'
-  },
+  // {
+  //   path: '/',
+  //   name: '默认首页',
+  //   redirect: '/admin'
+  // },
   {
     path: '/login',
     name: 'login',
@@ -59,6 +59,18 @@ const routes = [
       {
         path: '/agentManage',
         name: '代理商管理',
+        component: () => import('../page/admin/agentManage.vue'),
+        // children: [
+        //   {
+        //     path: '/creatagentManage',
+        //     name: '创建代理商',
+        //     component: () => import('../page/admin/agentManage.vue')
+        //   }
+        // ]
+      },
+      {
+        path: '/creatagentManage',
+        name: '创建代理商',
         component: () => import('../page/admin/agentManage.vue')
       },
       {
@@ -68,8 +80,13 @@ const routes = [
       },
       {
         path: '/businessManage',
-        name: 'businessManage',
+        name: '商家管理',
         component: () => import('../page/admin/businessManage.vue')
+      },
+      {
+        path: '/businessInsert',
+        name: '新增商家',
+        component: () => import('../page/admin/businessInsert.vue')
       },
       {
         path: '/DRPSet',

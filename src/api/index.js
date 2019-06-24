@@ -2,8 +2,8 @@
 import axios from 'axios'
 // import store from '../store'
 
-import data from '../mock/cardManage.js'
-import data2 from '../mock/cardManagePage.js'
+import cardManageListData from '../mock/cardManage.js'
+// import data2 from '../mock/cardManagePage.js'
 const back = axios.create() // 后台axios实例
 const front = axios.create() // 前台axios实例
 
@@ -57,11 +57,15 @@ export default {
     // const result = await axios.get('/api/cardManage/list', params)
     return axios.get('/api/cardManage/list', params)
   },
-  async getCardManageListPage (params) {
+  async delCardManageList (params) {
     // const result = await axios.get('/api/cardManage/list', params)
-    return axios.get('/api/cardManage/page', params)
+    return axios.get('/api/cardManage/:id', params)
   },
-  getArticleList () {
-
+  async EditCardManageList (params) {
+    // const result = await axios.get('/api/cardManage/list', params)
+    return axios.get('/api/cardManage/:id', params)
+  },
+  getCreatCard (params) {
+    return axios.get('/api/createCard/list', params)
   }
 }

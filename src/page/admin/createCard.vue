@@ -1,7 +1,6 @@
 <template>
   <div class="rightModule">
     <div class="page-location">
-        <!-- <h1 :data-name='pageLocation'>{{ pageLocation }}</h1> -->
       <el-breadcrumb separator="/">
         <el-breadcrumb-item :to="{ path: currentPath }">首页</el-breadcrumb-item>
         <el-breadcrumb-item>{{pageLocation}}</el-breadcrumb-item>
@@ -11,13 +10,13 @@
       <search :keyword='keyword'></search>
     </div> -->
     <div class="search-wrap">
-      <el-form label-width="100px" class="demo-ruleForm" :model="ruleForm2" :rules="rules2" ref="ruleForm2">
-        <el-form-item label="会员卡名称" prop="name">
+      <el-form label-width="100px" class="demo-ruleForm" :model="params" ref="searchForm" >
+        <el-form-item label="会员卡名称" prop="cardName">
           <el-col :span="11">
-          <el-input v-model="ruleForm2.name"></el-input>
+          <el-input placeholder="会员卡名称" v-model="params.cardName"></el-input>
           </el-col>
           <el-col :span="11" style="margin-left:1rem">
-            <el-button type="primary" @click="submitForm('ruleForm2')">查询 </el-button>
+            <el-button type="primary" @click="submitSearch">查询 </el-button>
           </el-col>
         </el-form-item> 
       
@@ -27,117 +26,130 @@
       </el-form>
     </div>
 
-    <div>
-      <cardList v-if="cardType&&cardType.length>0" :dataList='cardType' :dataDefault='this.thead'/>
-      <div class="no-data" v-else>
-        暂时无数据
-      </div>   
+    <div class="table-wrap">
+      <cardList :datalist='MembersCardList' v-if='MembersCardList&&MembersCardList.list.length>0'/>
+        <div class="no-data" v-else>
+          暂时无数据
+        </div>
+        <el-pagination class="page-wrap"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="this.MembersCardList.currentPage"
+        :page-sizes='this.MembersCardList.pageSize'
+        layout="total, prev, pager, next, jumper"
+        :total="this.MembersCardList.total">
+      </el-pagination>
+        <!-- 分页 -->
     </div>
-    
-    
     <!-- 弹出层部分 -->
     <el-dialog title="批量生成卡" :visible.sync="dialogFormVisible">
-       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" style='300px'>
-        <!-- <el-form-item label="选择会员卡" prop="name" :label-width="formLabelWidth">
-          <el-input v-model="ruleForm.name"></el-input>
-        </el-form-item> -->
-        <el-form-item label="选择会员卡" prop="region" :label-width="formLabelWidth">
-        <el-select v-model="ruleForm.region" placeholder="请选择活动区域">
-          <el-option v-for="(item,index) in cartType" :key='index' :label="item.type" :value="item.value"></el-option>
-          <!-- <el-option label="卡·2" value="beijing"></el-option> -->
-        </el-select>
-      </el-form-item>
-      <!-- <el-form :model="form" style="width:90%" :rules="rulesc" ref="ruleFormc" > -->
-        <el-form-item label="生成数量" prop="number" :label-width="formLabelWidth">
-          <el-col :span="12">
-             <el-input v-model="ruleForm.edu" autocomplete="off"></el-input>
-          </el-col>
+      <el-form :model="creatCard" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm2">
+        <el-form-item label="选择卡类型" prop="cardName">
+          <el-input v-model="creatCard.cardName" placeholder="选择会员卡类型"></el-input>
         </el-form-item>
-        
+        <el-form-item label="生成数量" prop="CashBack">
+          <el-input v-model.number="creatCard.CashBack" placeholder="返现额度"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm">保存</el-button>
+          <el-button @click="resetForm">取消</el-button>
+        </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <!-- <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
-      </div>
+        <el-button type="primary" @click="submitForm('creatCardParam')">确 定</el-button>
+      </div> -->
     </el-dialog>
   </div>
 </template>
-
 <script>
-// @ is an alias to /src
 import cardList from '@/components/cardlist.vue'
-// import search from '@/components/searchMod.vue'
 import {mapState,mapActions} from 'vuex'
 export default {
   data () {
     return {
       pageLocation: '会员卡生成',
-      currentPath: '/',
-      thead:[
-        '会员名称'	,'返现额度',	'会员折扣',	'已绑定',	'已激活',	'创建时间',	'操作'
-      ], 
-      keyword:{
-        value:'会员卡名称'
+      currentPath: '/admin',
+      formLabelWidth: '120px',
+      dialogFormVisible: false,
+      // 搜索 参数
+      params:{
+        cardName:'',
+        page:'',
+        pageSize:'10',
       },
-      cardData:'',
-        dialogTableVisible: false,
-        dialogFormVisible: false,
-        ruleForm: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
-        },
-        rules: {
-          name: [
-            { required: true, message: '请输入会员卡名称', trigger: 'blur' },
-            { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' }
-          ],
-          region: [
-            { required: false, message: '请输入返现额度', trigger: 'blur' },
-            { min: 1, max: 10, message: '请输入合适的值', trigger: 'blur' }
-          ],
-        },
-        ruleForm2: {
-          name: '',
-        },
-        rules2: {
-          name: [
-            { required: true, message: '请输入会员卡名称', trigger: 'blur' },
-            { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' }
-          ],
-        },
-        formLabelWidth: '120px',
-        cartType:[{
-          type:'卡1',
-          value:'01'
-        },{
-           type:'卡2',
-           value:'02'
-        }]
+      creatCard: {
+        cardName: '',
+        CashBack: '',
+      },
+      rules: {
+        cardName: [
+          { required: true, message: '请选择卡类型', trigger: 'blur' },
+          { required: true,min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+        ],
+        CashBack: [
+          { required: true, message: '请输入生成数量', trigger: 'change' },
+           { type: 'number', message: '限输入1-10000的正整数'}
+        ], 
+      },
+      // responsList
+      MembersCardList: {
+        "code":200,
+        "total":100,
+        "totalPage":'1',
+        'pageSize': [10, 20, 50, 100, 200],
+        "currentPage":1,
+        list:[
+          {
+          "userName" :  '生成卡a01',
+          "CashBack":100,
+          "MemberDiscount":8.5,
+          "Binded":100,
+          "activated":'20000',
+          "CreationTime":'2019-01-18',
+          },
+          {
+          "userName" :  'a01',
+          "CashBack":100,
+          "MemberDiscount":8.5,
+          "Binded":100,
+          "activated":'2000',
+          "CreationTime":'2019-01-18',
+          }
+        ]
+      },
+      // 标头
+      // formHeader:[
+      //   '会员名称'	,'返现额度',	'会员折扣',	'已绑定',	'已激活',	'创建时间',
+      // ], 
+     
     }
   },
   components: {
     cardList,
-    // search
   },
   mounted() {
-   this.getData()
+  //  this.getData()
   },
-  computed:mapState(['cardType']),
+  // computed:mapState(['initCardData']),
   methods:{
-    ...mapActions(['handleCardData']),
-    getData() {
-      this.handleCardData()
+    // ...mapActions(['handleCardData']),
+    getData(params) {
+      this.$api.getCardManageList(params)
+      .then((result)=>{
+          console.log(result.data)
+          this.MembersCardList =result.data
+          // this.handleCardData(result.data)
+        })
     },
-    submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
+    submitSearch(){
+      console.log(this.$refs['searchForm'],'搜索参数：',this.params)
+      this.getData(this.params)
+    },
+    submitForm() {
+        this.$refs["ruleForm"].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            // console.log(this.ruleForm2);
             this.dialogFormVisible=false
           } else {
             console.log('error submit!!');
@@ -145,15 +157,23 @@ export default {
           }
         });
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+    resetForm() {
+      this.$refs["ruleForm"].resetFields();
     },
-   
+    // 分页提交
+    handleSizeChange(val){
+      console.log(val)
+    },
+    handleCurrentChange(page){
+      console.log('cardManagePage:==handleCurrentChange:',page)  
+      this.params.page= page
+      this.getData(this.params)
+    },
   },
   watch: {
-      "$route" (to, from) {
-        this.currentPath = to.path; //变成绝对路径
-      }
+      // "$route" (to, from) {
+      //   this.currentPath = to.path; //变成绝对路径
+      // }
   },
 }
 </script>
@@ -178,5 +198,8 @@ export default {
 }
 .el-form-item{
   text-align: left;
+}
+.page-wrap{
+  // padding:10px 0;
 }
 </style>

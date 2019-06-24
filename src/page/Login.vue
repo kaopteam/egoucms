@@ -59,7 +59,7 @@ export default {
 </script>
 
 <style scoped>
-  /* @import '../assets/css/commen.css'; */
+  @import '../assets/css/commen.css';
   .el-form-item{
     text-align: center;
   }

@@ -5,14 +5,17 @@
         <!-- push就是相对定位了 -->
         <div></div>
         <el-col :span='24' class='rightbar'>
+          <div class=''>
+          <span class='admin-user'>{{userName}}</span>
           <el-button type="text" @click="loginout">注销</el-button>
+          </div>
         </el-col>
       </el-col>
     </el-row>
     <!-- 顶部导航结束 -->
     <el-row class="panel-center">
       <el-col :span="5">
-        <leftModule :userLevel="level"></leftModule>
+        <leftModule :userLevel="userLevel"></leftModule>
       </el-col>
       <!-- 左侧导航结束 -->
       <el-col :span='19' class="panel-c-c">
@@ -29,10 +32,9 @@ import leftModule from '@/components/leftModule.vue'
   export default {
     data() {
       return {
-        currentPath: '/admin/articleList',
-        currentPathNameParent: '管理面板',
-        currentPathName: '文章管理',
-        level:'A'
+        // 登录用户的等级
+        userLevel:'A',
+        userName:'超级管理员'
       }
     },
     components:{
@@ -56,8 +58,8 @@ import leftModule from '@/components/leftModule.vue'
     },
     watch: {
       "$route" (to, from) {
-        this.currentPath = to.path; //变成绝对路径
-        this.currentPathName = to.name //匹配的完整的带子路由的name
+        // this.currentPath = to.path; //变成绝对路径
+        // this.currentPathName = to.name //匹配的完整的带子路由的name
       }
     },
   }
@@ -105,7 +107,9 @@ import leftModule from '@/components/leftModule.vue'
     /*内层设置滚动*/
     padding: 30px;
   }
-  .rightbar{
-    text-align: right;
+  .admin-user{
+    font-size:12px;
+    margin-right:10px;
   }
+  
 </style>

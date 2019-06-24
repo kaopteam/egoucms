@@ -2,18 +2,17 @@
  * @Author: mikey.yijinghao
  * @Date: 2019-06-20 16:14:38
  * @Last Modified by: mikey.yijinghao
- * @Last Modified time: 2019-06-21 21:03:02
+ * @Last Modified time: 2019-06-21 21:55:31
  */
 import Mock from 'mockjs'
 // const httpUrl = `${requestHost}/api/article/create`
 // const urlReg= '/api\/test\/lists/'
-
-export default Mock.mock(/api\/cardManage\/list/, 'get', (res, req) => {
+export default Mock.mock(/api\/createCard\/list/, 'get', (res, req) => {
   // console.log(res)
   const jikeDetailItem = {
     'list': [
       {
-        'userName': 'a01我试',
+        'userName': '创建的卡',
         'CashBack': 100,
         'MemberDiscount': 8.5,
         'Binded': 100,
