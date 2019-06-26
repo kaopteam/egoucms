@@ -59,7 +59,7 @@ const routes = [
       {
         path: '/agentManage',
         name: '代理商管理',
-        component: () => import('../page/admin/agentManage.vue'),
+        component: () => import('../page/admin/agentManage.vue')
         // children: [
         //   {
         //     path: '/creatagentManage',
@@ -69,9 +69,24 @@ const routes = [
         // ]
       },
       {
-        path: '/creatagentManage',
+        path: '/creatAgentManage',
         name: '创建代理商',
-        component: () => import('../page/admin/agentManage.vue')
+        component: () => import('../page/admin/creatAgentManage.vue')
+      },
+      {
+        path: '/newPromoter',
+        name: '新增推广员',
+        component: () => import('../page/admin/newPromoter.vue')
+      },
+      {
+        path: '/newBusiness',
+        name: '新增商家',
+        component: () => import('../page/admin/newBusiness.vue')
+      },
+      {
+        path: '/test',
+        name: '创建代理商',
+        component: () => import('../page/admin/test.vue')
       },
       {
         path: '/promoterManage',
@@ -94,9 +109,14 @@ const routes = [
         component: () => import('../page/admin/DRPSet.vue')
       },
       {
-        path: '/Settlement',
+        path: '/DRPOrder',
+        name: '分销订单',
+        component: () => import('../page/admin/DRPOrder.vue')
+      },
+      {
+        path: '/settlement',
         name: '结算记录',
-        component: () => import('../page/admin/Settlement.vue')
+        component: () => import('../page/admin/settlement.vue')
       },
       {
         path: '/DRPOrder',

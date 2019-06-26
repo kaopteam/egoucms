@@ -235,10 +235,17 @@ export default {
     },
     // 绑定会员卡 参数提交
     submitForm(){
+      let num1=this.ruleForm.num1
+      let num2=this.ruleForm.num2
       this.$refs['ruleForm'].validate((valid) => {
           if (valid) {
-            alert('submit!',valid);
-            this.dialogFormVisible=false
+            // alert('submit!',valid);
+            if(num1<num2){
+              this.dialogFormVisible=false 
+            }else{
+              alert('结束值不能小于起始值')
+              return false
+            }
           } else {
             console.log('error submit!!');
             return false;
@@ -255,7 +262,11 @@ export default {
       console.log(params)
     },
     // 新建代理商：
-    newAgentManage(){}
+    newAgentManage(){
+       this.$router.push({
+        path: '/creatAgentManage'
+       }) 
+    }
   }
 }
 </script>
