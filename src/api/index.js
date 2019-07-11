@@ -2,7 +2,7 @@
 import axios from 'axios'
 // import store from '../store'
 
-import cardManageListData from '../mock/cardManage.js'
+import agentManageList from '../mock/agentManage.js'
 // import data2 from '../mock/cardManagePage.js'
 const back = axios.create() // 后台axios实例
 const front = axios.create() // 前台axios实例
@@ -67,5 +67,8 @@ export default {
   },
   getCreatCard (params) {
     return axios.get('/api/createCard/list', params)
+  },
+  getAgentList (params) {
+    return axios.get('/api/agentManage/list', params)
   }
 }

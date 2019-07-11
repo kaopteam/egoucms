@@ -59,9 +59,9 @@
     </div>
     <!-- 搜索部分end -->
 
-     <div class="card-list" v-if="this.cardData.list&& this.cardData.list.length>0">
+     <div class="card-list" v-if="this.pageData.list&& this.pageData.list.length>0">
           <el-table
-            :data="this.cardData.list"
+            :data="this.pageData.list"
             style="width: 100%">
               <el-table-column
                 label="代理商ID"
@@ -120,10 +120,10 @@
        <el-pagination class="page-wrap"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="this.cardData.currentPage"
-        :page-sizes='this.cardData.pageSize'
+        :current-page="this.pageData.currentPage"
+        :page-sizes='this.pageData.pageSize'
         layout="total, prev, pager, next, jumper"
-        :total="this.cardData.total">
+        :total="this.pageData.total">
       </el-pagination>
       <!-- 分页部分内容end -->
 
@@ -160,7 +160,7 @@ export default {
       currentPath: '/admin',
       dialogFormVisible: false,
       formLabelWidth: '120px',
-      cardData:{
+      pageData:{
         list:[
         {
         id:'010',
@@ -222,7 +222,10 @@ export default {
         ],
       },
     }
-  }, 
+  },
+  mounted(){
+    this.getData(this.params)
+  },
   methods:{
     // 点击分页操作
     handleCurrentChange(){
@@ -232,6 +235,13 @@ export default {
     // 搜索
     handleSearch(){
       console.log('提交代理商搜索',this.params)
+    },
+    getData(params) {
+      this.$api.getAgentList(params)
+      .then((result)=>{
+          console.log('fdsf',result.data)
+          this.pageData =result.data
+        })
     },
     // 绑定会员卡 参数提交
     submitForm(){
